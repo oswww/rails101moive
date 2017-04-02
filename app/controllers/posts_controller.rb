@@ -4,6 +4,10 @@ class PostsController < ApplicationController
   def new
     @group = Group.find(params[:group_id])
     @post = Post.new
+
+    if !current_user.is_member_of?(@group)
+      redirect_to root_path, alert: "You have no permission."
+    end
   end
 
   def create
@@ -18,6 +22,15 @@ class PostsController < ApplicationController
       render :new
     end
   end
+
+    def edit
+      @group = Group.find(params[:id])
+      @post.group = @group
+
+      if !current_user.is_member_of?(@group)
+        redirect_to root_path, alert: "You have no permission."
+      end
+    end
 
   private
 
